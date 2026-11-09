@@ -2,7 +2,7 @@
 export const SITE = {
   name: "Morya Travels",
   tagline: "Your Journey, Our Responsibility",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.moryatravels.in",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://moryatravel.in",
   logo: "/images/brand/morya-travels-logo.png",
   phone: "8999514635",
   phoneDisplay: "+91 89995 14635",
