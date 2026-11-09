@@ -1,0 +1,145 @@
+// Prisma schema mirroring Supabase tables.
+// Generated client can be used alongside Supabase client for type-safe DB access.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Booking {
+  id          String   @id @default(uuid()) @db.Uuid
+  bookingNumber String?  @unique @map("booking_number") @db.Text
+  name        String   @db.Text
+  phone       String   @db.Text
+  email       String?  @db.Text
+  pickup      String   @db.Text
+  dropoff     String   @db.Text
+  travelDate  DateTime? @map("travel_date") @db.Timestamptz(6)
+  tripType    String?   @map("trip_type") @db.Text
+  passengers  String?   @db.Text
+  vehicleId   String?   @map("vehicle_id") @db.Text
+  vehicleName String?   @map("vehicle_name") @db.Text
+  status      String   @default("pending") @db.Text
+  notes       String?   @db.Text
+  source      String   @default("website") @db.Text
+  amount      Decimal?  @db.Numeric
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([status])
+  @@index([source])
+  @@index([createdAt])
+}
+
+model Vehicle {
+  id           String   @id @default(uuid()) @db.Uuid
+  slug         String   @unique @db.Text
+  name         String   @db.Text
+  type         String   @default("sedan") @db.Text
+  seats        Int      @default(4)
+  luggage      Int      @default(2)
+  ac           Boolean  @default(true)
+  ratePerKm    Int      @default(0) @map("rate_per_km")
+  minKm        Int      @default(0) @map("min_km")
+  badge        String?   @db.Text
+  badgeColor   String?   @map("badge_color") @db.Text
+  image        String?   @db.Text
+  features     String?   @db.Text
+  extraFeatures String?   @map("extra_features") @db.Text
+  packageRate  Int?      @map("package_rate") @db.Int
+  available    Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([available])
+}
+
+model Route {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique @db.Text
+  name        String   @db.Text
+  distance    String?   @db.Text
+  duration    String?   @db.Text
+  startingFrom String?   @map("starting_from") @db.Text
+  image       String?   @db.Text
+  description String?   @db.Text
+  popular     Boolean  @default(false)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([popular])
+}
+
+model Package {
+  id          String   @id @default(uuid()) @db.Uuid
+  slug        String   @unique @db.Text
+  title       String   @db.Text
+  description String?   @db.Text
+  columns     Json?
+  rows        Json?
+  note        String?   @db.Text
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+}
+
+model Lead {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.Text
+  phone     String   @db.Text
+  email     String?   @db.Text
+  message   String   @db.Text
+  source    String   @default("website") @db.Text
+  status    String   @default("new") @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+}
+
+model Notification {
+  id         String   @id @default(uuid()) @db.Uuid
+  type       String   @db.Text
+  title      String   @db.Text
+  message    String   @db.Text
+  unread     Boolean  @default(true)
+  bookingId  String?   @map("booking_id") @db.Uuid
+  adminId    String?   @map("admin_id") @db.Uuid
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+}
+
+model Admin {
+  id          String   @id @default(uuid()) @db.Uuid
+  name        String   @db.Text
+  email       String   @unique @db.Text
+  passwordHash String?   @map("password_hash") @db.Text
+  passwordHashLegacy String? @map("passwordhash") @db.Text
+  role        String   @default("admin") @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+}
+
+model Service {
+  id           String   @id @default(uuid()) @db.Uuid
+  slug         String   @unique @db.Text
+  title        String   @db.Text
+  description  String?   @db.Text
+  shortDescription String? @map("short_description") @db.Text
+  category     String   @default("local") @db.Text
+  fare         String?   @db.Text
+  fareUnit     String?   @map("fare_unit") @db.Text
+  image        String?   @db.Text
+  icon         String   @default("Car") @db.Text
+  includes     Json?
+  idealFor     Json?     @map("ideal_for")
+  relatedIds   Json?     @map("related_ids")
+  places       Json?
+  badge        String?   @db.Text
+  badgeColor   String?   @map("badge_color") @db.Text
+  active       Boolean  @default(true)
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+}
