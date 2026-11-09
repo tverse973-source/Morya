@@ -1,8 +1,6 @@
 "use client";
 
-export const metadata = {
-  title: "Something went wrong",
-};
+import { useEffect } from "react";
 
 export default function Error({
   error,
@@ -11,7 +9,9 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  console.error("Next.js error boundary:", error);
+  useEffect(() => {
+    console.error("Next.js error boundary:", error);
+  }, [error]);
 
   return (
     <main className="min-h-[calc(100vh-160px)] flex flex-col items-center justify-center bg-slate-50 px-4 pt-12 pb-20">

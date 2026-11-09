@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { SITE } from "@/constants/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -7,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: ["/morya-admin-hq-9x", "/api"],
     },
-    sitemap: "https://www.moryatravels.in/sitemap.xml",
+    sitemap: `${SITE.url}/sitemap.xml`,
   };
 }

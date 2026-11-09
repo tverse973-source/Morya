@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -27,7 +27,7 @@ export function AboutSection() {
     <section className="relative overflow-hidden bg-white py-12 md:py-16">
       <div className="absolute inset-x-0 top-0 aspect-[16/9] w-full">
         <SafeImage
-          src="/images/brand/about-journeys.png"
+          src="/images/brand/about-journey.png"
           alt="Morya Travels journey"
           sizes="100vw"
           className="block h-full w-full object-cover object-center"

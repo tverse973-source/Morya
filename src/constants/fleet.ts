@@ -167,6 +167,7 @@ export const FLEET: Vehicle[] = [
     badge: "Group",
     badgeColor: "#6366F1",
     image: "/images/fleet/tempo-traveller-13-seater.png",
+    packageRate: 8400,
   },
   {
     id: "tempo-traveller",
@@ -188,6 +189,7 @@ export const FLEET: Vehicle[] = [
     badge: "Tempo",
     badgeColor: "var(--color-accent-gold)",
     image: "/images/fleet/tempo-traveller-17-seater.png",
+    packageRate: 8400,
   },
 ];
 

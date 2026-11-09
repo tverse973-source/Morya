@@ -1,8 +1,9 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { serverError } from "@/lib/api-error";
 import { supabaseAdmin } from "@/lib/supabase";
+import { requireAdminMutation } from "@/lib/auth";
 
 const updateSchema = z.object({
   name: z.string().trim().min(2).max(120).optional(),
@@ -29,6 +30,9 @@ function safeDate(value: string | undefined) {
 }
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const guard = await requireAdminMutation();
+  if (!guard.ok) return guard.response;
+
   try {
     const { id } = await params;
     if (!id) return NextResponse.json({ error: "Booking id is required" }, { status: 400 });
@@ -42,6 +46,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
 }
 
 export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const guard = await requireAdminMutation();
+  if (!guard.ok) return guard.response;
+
   try {
     const { id } = await params;
     if (!id) return NextResponse.json({ error: "Booking id is required" }, { status: 400 });
@@ -72,6 +79,9 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
 }
 
 export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const guard = await requireAdminMutation();
+  if (!guard.ok) return guard.response;
+
   try {
     const { id } = await params;
     if (!id) return NextResponse.json({ error: "Booking id is required" }, { status: 400 });

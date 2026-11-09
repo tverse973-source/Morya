@@ -1,4 +1,4 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { requireAdminMutation } from "@/lib/auth";
@@ -62,5 +62,19 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     return NextResponse.json({ ok: true, vehicle: data });
   } catch {
     return NextResponse.json({ error: "Failed to update vehicle" }, { status: 500 });
+  }
+}
+
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const guard = await requireAdminMutation();
+  if (!guard.ok) return guard.response;
+  try {
+    const { id } = await params;
+    const { error, count } = await supabaseAdmin.from("vehicles").delete({ count: "exact" }).eq("id", id);
+    if (error) return serverError("Failed to delete vehicle");
+    if (!count) return NextResponse.json({ error: "Vehicle not found" }, { status: 404 });
+    return NextResponse.json({ ok: true });
+  } catch {
+    return NextResponse.json({ error: "Failed to delete vehicle" }, { status: 500 });
   }
 }

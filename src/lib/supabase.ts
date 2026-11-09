@@ -23,12 +23,18 @@ function missingClient(message: string): SupabaseClient {
 
 const hasPublicConfig = Boolean(supabaseUrl && supabasePublishableKey);
 const missingPublicConfigMessage =
-  "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in vighnaharta-travels/.env.local, then restart the dev server.";
+  "Supabase is not configured. Set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in .env.local, then restart the server.";
 
 // Public/browser-safe client (use with RLS-enabled public tables as appropriate).
 export const supabase: SupabaseClient = hasPublicConfig
   ? createClient(supabaseUrl, supabasePublishableKey)
   : missingClient(missingPublicConfigMessage);
+
+if (!supabaseServiceKey && process.env.NODE_ENV === "production") {
+  console.error(
+    "CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not set in production. Protected administrative operations and notifications will fail under RLS."
+  );
+}
 
 // Server-only privileged client. Falls back to publishable client if service role key is not set.
 export const supabaseAdmin: SupabaseClient = supabaseServiceKey

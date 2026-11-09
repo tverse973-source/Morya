@@ -33,14 +33,22 @@ export async function POST(request: Request) {
     const payload = await request.json().catch(() => null);
     const parsed = packageSchema.safeParse(payload);
     if (!parsed.success) return NextResponse.json({ error: "Invalid package payload", issues: parsed.error.flatten().fieldErrors }, { status: 400 });
-    JSON.parse(parsed.data.columns);
-    JSON.parse(parsed.data.rows);
+
+    let parsedCols: unknown;
+    let parsedRows: unknown;
+    try {
+      parsedCols = JSON.parse(parsed.data.columns);
+      parsedRows = JSON.parse(parsed.data.rows);
+    } catch {
+      return NextResponse.json({ error: "Columns and rows must be valid JSON strings." }, { status: 400 });
+    }
+
     const row = {
       slug: slugify(parsed.data.title),
       title: parsed.data.title,
       description: parsed.data.description || "",
-      columns: JSON.parse(parsed.data.columns),
-      rows: JSON.parse(parsed.data.rows),
+      columns: parsedCols,
+      rows: parsedRows,
       note: parsed.data.note || "",
       active: parsed.data.active ?? true,
       updated_at: new Date().toISOString(),
@@ -49,6 +57,6 @@ export async function POST(request: Request) {
     if (error) return serverError("Failed to create package");
     return NextResponse.json({ ok: true, package: data });
   } catch {
-    return serverError("Failed to create package. Ensure columns/rows are valid JSON.");
+    return serverError("Failed to create package");
   }
 }

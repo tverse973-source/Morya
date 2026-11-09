@@ -8,7 +8,7 @@ import { FLEET } from "@/constants/fleet";
 import { SITE, whatsappUrl } from "@/constants/site";
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Bus, Calendar, Car, MapPin, MessageCircle, Users, Wallet } from "lucide-react";
+import { Calendar, MapPin, MessageCircle, Users, Wallet } from "lucide-react";
 
 const STEPS = ["Trip Details", "Vehicle Selection", "Passenger Info", "Confirm"];
 const TRIP_TYPES = ["One way", "Round trip", "Airport transfer", "Pilgrimage", "Corporate"];
@@ -129,11 +129,30 @@ function BookPageInner() {
               <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {FLEET.map((v) => {
                   const selected = form.vehicleId === v.id;
-                  const Icon = v.type === "tempo" ? Bus : Car;
+                  const rateText =
+                    v.id === "mini-bus"
+                      ? "₹24/km | ₹28/km"
+                      : v.id === "tempo-traveller"
+                        ? "₹25/km | ₹28/km"
+                        : v.type === "tempo"
+                          ? (v.packageRate != null ? `₹${v.packageRate} pkg` : `₹${v.ratePerKm}/km`)
+                          : `₹${v.ratePerKm}/km`;
+                  const subText = v.type === "tempo" ? (v.ac ? "AC / Non-AC" : "Non-AC") : `${v.minKm} km`;
                   return (
-                    <button key={v.id} type="button" onClick={() => setForm({ ...form, vehicleId: v.id })} className={`rounded-xl border p-4 text-left transition-all ${selected ? "border-brand-blue bg-brand-blue/10 shadow-[0_0_20px_rgba(30,79,216,0.20)]" : "border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#CBD5E1]"}`}>
-                      <div className="mb-3 flex items-center gap-3"><Icon className="h-8 w-8 text-brand-blue" /><div><div className="font-bold text-[#0F172A]">{v.name}</div><div className="font-mono text-xs text-[#64748B]">{v.seats} seats</div></div></div>
-                      <div className="flex items-baseline justify-between"><span className="font-mono font-bold text-brand-blue">{v.type === "tempo" ? `₹${v.packageRate} pkg` : `₹${v.ratePerKm}/km`}</span><span className="font-mono text-xs text-[#64748B]">{v.type === "tempo" ? (v.ac ? "AC" : "Non-AC") : `${v.minKm} km`}</span></div>
+                    <button key={v.id} type="button" onClick={() => setForm({ ...form, vehicleId: v.id })} className={`overflow-hidden rounded-xl border text-left transition-all ${selected ? "border-brand-blue bg-brand-blue/10 shadow-[0_0_20px_rgba(30,79,216,0.20)]" : "border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#CBD5E1]"}`}>
+                      <div className="relative h-28 w-full bg-[#EEF2FF]">
+                        <Image src={v.image} alt={v.name} fill className="object-contain p-2" sizes="(max-width: 640px) 100vw, 33vw" />
+                      </div>
+                      <div className="p-4">
+                        <div className="mb-2">
+                          <div className="font-bold text-[#0F172A]">{v.name}</div>
+                          <div className="font-mono text-xs text-[#64748B]">{v.seats} seats</div>
+                        </div>
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="font-mono text-sm font-bold text-brand-blue">{rateText}</span>
+                          <span className="font-mono text-xs text-[#64748B] shrink-0">{subText}</span>
+                        </div>
+                      </div>
                     </button>
                   );
                 })}
@@ -189,7 +208,7 @@ function BookPageInner() {
                     <div className="flex justify-between text-[#0F172A]"><span>Date</span><span>{form.date || "Not selected"}</span></div>
                     <div className="flex justify-between text-[#0F172A]"><span>Trip type</span><span>{form.tripType}</span></div>
                     <div className="flex justify-between text-[#0F172A]"><span>Passengers</span><span>{form.passengers}</span></div>
-                    {vehicle && <><div className="flex justify-between text-[#0F172A]"><span>Vehicle</span><span>{vehicle.name}</span></div><div className="flex justify-between text-[#0F172A]"><span>Estimated rate</span><span className="font-mono font-bold">{vehicle.type === "tempo" ? `₹${vehicle.packageRate} pkg` : `₹${vehicle.ratePerKm}/km`}</span></div></>}
+                      {vehicle && <><div className="flex justify-between text-[#0F172A]"><span>Vehicle</span><span>{vehicle.name}</span></div><div className="flex justify-between text-[#0F172A]"><span>Estimated rate</span><span className="font-mono font-bold">{vehicle.id === "mini-bus" ? "₹24/km | ₹28/km" : vehicle.id === "tempo-traveller" ? "₹25/km | ₹28/km" : vehicle.type === "tempo" ? (vehicle.packageRate != null ? `₹${vehicle.packageRate} pkg` : `₹${vehicle.ratePerKm}/km`) : `₹${vehicle.ratePerKm}/km`}</span></div></>}
                   </div>
                   <div className="space-y-3">
                     <AnimatedButton variant="gold" size="lg" className="w-full" disabled={submitting} onClick={handleSubmit}>{submitting ? "Submitting..." : "Submit Booking Request"}</AnimatedButton>

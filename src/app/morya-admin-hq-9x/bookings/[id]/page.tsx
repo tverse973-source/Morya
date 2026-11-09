@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
@@ -8,6 +8,12 @@ type Booking = Record<string, unknown>;
 const STATUS_OPTIONS = ["pending", "confirmed", "cancelled", "completed", "closed"];
 function v(b: Booking | null, key: string) { const x = b?.[key]; return x == null ? "" : String(x); }
 function dateInput(v: unknown) { if (!v) return ""; const d = new Date(String(v)); return Number.isNaN(d.getTime()) ? "" : d.toISOString().slice(0, 10); }
+
+function getCsrf() {
+  if (typeof document === "undefined") return "";
+  const match = document.cookie.match(/(?:^|; )vgh_admin_csrf=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : "";
+}
 
 export default function BookingDetailPage() {
   const params = useParams<{ id: string }>();
@@ -20,15 +26,19 @@ export default function BookingDetailPage() {
 
   const load = useCallback(async () => {
     const res = await fetch(`/api/bookings/${params.id}`, { cache: "no-store" });
+    if (res.status === 401) {
+      router.push("/morya-admin-hq-9x/login");
+      return null;
+    }
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.booking) throw new Error(data.error || "Failed to load booking");
     return data.booking as Booking;
-  }, [params.id]);
+  }, [params.id, router]);
 
   useEffect(() => {
     if (!params.id) return;
     let active = true;
-    load().then((row) => { if (active) { setBooking(row); setError(""); } })
+    load().then((row) => { if (active && row) { setBooking(row); setError(""); } })
       .catch((e) => { if (active) setError(e instanceof Error ? e.message : "Failed to load booking"); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
@@ -48,7 +58,12 @@ export default function BookingDetailPage() {
         source: v(booking, "source") || null, notes: v(booking, "notes") || null,
         amount: v(booking, "amount") === "" ? null : Number(v(booking, "amount")),
       };
-      const res = await fetch(`/api/bookings/${params.id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+      const res = await fetch(`/api/bookings/${params.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf() },
+        body: JSON.stringify(payload),
+      });
+      if (res.status === 401) { router.push("/morya-admin-hq-9x/login"); return; }
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Failed to save booking");
       setBooking(data.booking as Booking);
@@ -58,7 +73,11 @@ export default function BookingDetailPage() {
   async function remove() {
     if (!confirm("Delete this booking permanently?")) return;
     setSaving(true); setError("");
-    const res = await fetch(`/api/bookings/${params.id}`, { method: "DELETE" });
+    const res = await fetch(`/api/bookings/${params.id}`, {
+      method: "DELETE",
+      headers: { "x-csrf-token": getCsrf() },
+    });
+    if (res.status === 401) { router.push("/morya-admin-hq-9x/login"); return; }
     const data = await res.json().catch(() => ({}));
     if (!res.ok) { setError(data.error || "Failed to delete booking"); setSaving(false); return; }
     router.push("/morya-admin-hq-9x/bookings"); router.refresh();

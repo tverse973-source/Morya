@@ -1,7 +1,8 @@
-﻿"use client";
+"use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 type Booking = Record<string, unknown> & { id: string };
 const STATUS_OPTIONS = ["pending", "confirmed", "cancelled", "completed", "closed"] as const;
@@ -9,23 +10,34 @@ const emptyForm = { name: "", phone: "", email: "", pickup: "", dropoff: "", dat
 function asText(v: unknown) { return v == null ? "" : String(v); }
 function fmtDate(v: unknown) { if (!v) return "—"; const d = new Date(String(v)); return Number.isNaN(d.getTime()) ? String(v) : d.toLocaleString("en-IN"); }
 
+function getCsrf() {
+  if (typeof document === "undefined") return "";
+  const match = document.cookie.match(/(?:^|; )vgh_admin_csrf=([^;]+)/);
+  return match ? decodeURIComponent(match[1]) : "";
+}
+
 export default function BookingManagementPage() {
+  const router = useRouter();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(emptyForm);
-const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("all");
   const [sourceFilter, setSourceFilter] = useState("all");
   const [query, setQuery] = useState("");
   const [reloadKey, setReloadKey] = useState(0);
 
   const load = useCallback(async () => {
     const res = await fetch("/api/bookings", { cache: "no-store" });
+    if (res.status === 401) {
+      router.push("/morya-admin-hq-9x/login");
+      return [];
+    }
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || "Failed to load bookings");
     return (data.bookings ?? []) as Booking[];
-  }, []);
+  }, [router]);
 
   useEffect(() => {
     let active = true;
@@ -35,7 +47,7 @@ const [filter, setFilter] = useState("all");
     return () => { active = false; };
   }, [load, reloadKey]);
 
-const filtered = useMemo(() => {
+  const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return bookings.filter((b) => {
       if (filter !== "all" && asText(b.status).toLowerCase() !== filter) return false;
@@ -48,7 +60,12 @@ const filtered = useMemo(() => {
   async function createBooking(e: React.FormEvent) {
     e.preventDefault(); setSaving(true); setError("");
     try {
-      const res = await fetch("/api/bookings", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, amount: form.amount ? Number(form.amount) : null }) });
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf() },
+        body: JSON.stringify({ ...form, amount: form.amount ? Number(form.amount) : null }),
+      });
+      if (res.status === 401) { router.push("/morya-admin-hq-9x/login"); return; }
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Failed to create booking");
       setForm(emptyForm); setLoading(true); setReloadKey((k) => k + 1);
@@ -56,7 +73,12 @@ const filtered = useMemo(() => {
   }
   async function setStatus(id: string, status: string) {
     setError("");
-    const res = await fetch(`/api/bookings/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }) });
+    const res = await fetch(`/api/bookings/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", "x-csrf-token": getCsrf() },
+      body: JSON.stringify({ status }),
+    });
+    if (res.status === 401) { router.push("/morya-admin-hq-9x/login"); return; }
     const data = await res.json().catch(() => ({}));
     if (!res.ok) { setError(data.error || "Failed to update booking"); return; }
     setLoading(true); setReloadKey((k) => k + 1);
@@ -64,7 +86,11 @@ const filtered = useMemo(() => {
   async function remove(id: string) {
     if (!confirm("Delete this booking permanently?")) return;
     setError("");
-    const res = await fetch(`/api/bookings/${id}`, { method: "DELETE" });
+    const res = await fetch(`/api/bookings/${id}`, {
+      method: "DELETE",
+      headers: { "x-csrf-token": getCsrf() },
+    });
+    if (res.status === 401) { router.push("/morya-admin-hq-9x/login"); return; }
     const data = await res.json().catch(() => ({}));
     if (!res.ok) { setError(data.error || "Failed to delete booking"); return; }
     setLoading(true); setReloadKey((k) => k + 1);
@@ -99,7 +125,7 @@ const filtered = useMemo(() => {
           </form>
         </section>
         <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-6">
-<div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-wrap gap-2">{["all", ...STATUS_OPTIONS].map((s) => <button key={s} type="button" onClick={() => setFilter(s)} className={`rounded-full px-3 py-1.5 text-xs font-medium ${filter === s ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-700"}`}>{s}</button>)}</div>
             <div className="flex flex-wrap gap-2">{["all", "website-package-booking", "website-booking", "admin"].map((s) => <button key={s} type="button" onClick={() => setSourceFilter(s)} className={`rounded-full px-3 py-1.5 text-xs font-medium ${sourceFilter === s ? "bg-brand-blue text-white" : "bg-slate-100 text-slate-700"}`}>{s === "website-package-booking" ? "Package" : s === "website-booking" ? "Regular" : s}</button>)}</div>
             <input placeholder="Search name, phone, route, ref..." value={query} onChange={(e) => setQuery(e.target.value)} className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-sm md:max-w-sm" />

@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Mail, Phone, MessageCircle } from "lucide-react";
 import { SITE, whatsappUrl } from "@/constants/site";
 
@@ -14,6 +17,9 @@ function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/morya-admin-hq-9x")) return null;
+
   return (
     <footer className="border-t border-[#E2E8F0] bg-white">
       <div className="container-page py-12 md:py-16">

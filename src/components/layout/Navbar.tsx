@@ -17,6 +17,8 @@ export function Navbar() {
     // keep hook order stable if scroll behavior is added later; currently not needed
   }, []);
 
+  if (pathname?.startsWith("/morya-admin-hq-9x")) return null;
+
   const navStyles =
     "sticky top-0 z-50 w-full border-b border-[#E2E8F0] bg-white/95 py-0 shadow-sm backdrop-blur-md transition-all duration-300";
 

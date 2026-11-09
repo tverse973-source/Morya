@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import crypto from "node:crypto";
 import { supabaseAdmin } from "@/lib/supabase";
+import { sendExternalNotification } from "@/lib/notify";
+import { SITE } from "@/constants/site";
 
 const schema = z.object({
   email: z.string().email(),
@@ -14,7 +16,7 @@ export async function POST(request: Request) {
   const email = parsed.data.email.trim().toLowerCase();
   const { data: admin, error: findError } = await supabaseAdmin
     .from("admins")
-    .select("id, email")
+    .select("id, email, name")
     .eq("email", email)
     .maybeSingle();
   if (findError || !admin) {
@@ -32,10 +34,21 @@ export async function POST(request: Request) {
 
   if (updateError) return NextResponse.json({ error: "Failed to generate reset token" }, { status: 500 });
 
-  // In production, email this token to the admin. For local/dev it is returned so the flow can be tested.
+  const resetUrl = `${SITE.url}/morya-admin-hq-9x/reset-password/${token}`;
+  try {
+    await sendExternalNotification({
+      type: "booking", // high priority
+      title: "Admin Password Reset Requested",
+      message: `Password reset requested for admin ${admin.name || admin.email}.\nReset link (valid 1 hour):\n${resetUrl}`,
+      details: { adminId: admin.id, email: admin.email },
+    });
+  } catch (err) {
+    console.error("Failed to deliver admin password reset notification:", err);
+  }
+
   return NextResponse.json({
     ok: true,
-    message: "Reset token generated.",
-    ...(process.env.NODE_ENV === "development" ? { resetToken: token, resetTo: admin.id } : {}),
+    message: "If an account exists, a reset instruction has been sent to configured channels.",
+    ...(process.env.NODE_ENV === "development" ? { resetToken: token, resetUrl } : {}),
   });
 }

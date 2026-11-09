@@ -1,9 +1,10 @@
-﻿import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { sendExternalNotification } from "@/lib/notify";
-import { serverError } from "@/lib/api-error";
+import { serverError, unauthorized } from "@/lib/api-error";
 import { supabaseAdmin } from "@/lib/supabase";
+import { getCurrentAdmin } from "@/lib/auth";
 
 const bookingSchema = z.object({
   name: z.string().trim().min(2).max(120),
@@ -18,7 +19,7 @@ const bookingSchema = z.object({
   vehicleName: z.string().trim().max(120).optional().default(""),
   details: z.string().trim().max(4000).optional().default(""),
   notes: z.string().trim().max(4000).optional().default(""),
-  source: z.string().trim().max(80).optional().default("admin"),
+  source: z.string().trim().max(80).optional().default("website"),
   status: z.enum(["pending", "confirmed", "cancelled", "completed", "closed"]).optional().default("pending"),
   amount: z.coerce.number().finite().optional().nullable(),
 });
@@ -30,6 +31,11 @@ function safeDate(value: string) {
 }
 
 export async function GET() {
+  const admin = await getCurrentAdmin();
+  if (!admin) {
+    return unauthorized();
+  }
+
   try {
     const { data, error } = await supabaseAdmin.from("bookings").select("*").order("created_at", { ascending: false });
     if (error) return serverError("Failed to load bookings");

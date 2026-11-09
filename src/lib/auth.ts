@@ -107,8 +107,21 @@ export async function signInAdmin(email: string, password: string): Promise<Admi
   const cookieStore = await cookies();
   const csrf = crypto.randomBytes(16).toString("hex");
   const token = createSessionToken(admin.id, csrf);
-  cookieStore.set(ADMIN_SESSION_COOKIE, token, { httpOnly: true, sameSite: "lax", path: "/", maxAge: SESSION_TTL_SECONDS });
-  cookieStore.set(ADMIN_CSRF_COOKIE, csrf, { httpOnly: true, sameSite: "lax", path: "/", maxAge: SESSION_TTL_SECONDS });
+  const isProd = process.env.NODE_ENV === "production";
+  cookieStore.set(ADMIN_SESSION_COOKIE, token, {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: SESSION_TTL_SECONDS,
+    secure: isProd,
+  });
+  cookieStore.set(ADMIN_CSRF_COOKIE, csrf, {
+    httpOnly: false, // Accessible to client-side scripts to send via x-csrf-token header
+    sameSite: "lax",
+    path: "/",
+    maxAge: SESSION_TTL_SECONDS,
+    secure: isProd,
+  });
   return admin;
 }
 
@@ -149,13 +162,26 @@ export type AdminMutationResult =
   | { ok: true; admin: AdminSessionUser }
   | { ok: false; response: NextResponse };
 
-export async function requireAdminMutation(): Promise<AdminMutationResult> {
+export async function requireAdminMutation(request?: Request): Promise<AdminMutationResult> {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get(ADMIN_SESSION_COOKIE)?.value;
-    if (!token || !verifySessionToken(token)) {
+    if (!token) {
       return { ok: false, response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
     }
+    const payload = verifySessionToken(token);
+    if (!payload) {
+      return { ok: false, response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
+    }
+
+    if (request && ["POST", "PATCH", "PUT", "DELETE"].includes(request.method)) {
+      const csrfHeader = request.headers.get("x-csrf-token");
+      const csrfCookie = cookieStore.get(ADMIN_CSRF_COOKIE)?.value;
+      if (csrfHeader && csrfCookie && csrfHeader !== csrfCookie && csrfHeader !== payload.csrf) {
+        return { ok: false, response: NextResponse.json({ error: "CSRF verification failed" }, { status: 403 }) };
+      }
+    }
+
     const admin = await getCurrentAdmin();
     if (!admin) {
       return { ok: false, response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };

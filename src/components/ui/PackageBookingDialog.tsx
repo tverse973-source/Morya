@@ -55,9 +55,9 @@ export function PackageBookingDialog({ isOpen, onClose, packageTitle }: PackageB
     }
   };
 
-  const whatsappMessage = `Hi Morya Travels, I would like to book the &ldquo;${packageTitle}&rdquo; package.\n\nName: ${form.name}\nPhone: ${form.phone}\nDate: ${form.date || "Not specified"}\nPassengers: ${form.passengers}\n\nPlease share availability and final fare details.`;
+  const whatsappMessage = `Hi Morya Travels, I would like to book the "${packageTitle}" package.\n\nName: ${form.name}\nPhone: ${form.phone}\nDate: ${form.date || "Not specified"}\nPassengers: ${form.passengers}\n\nPlease share availability and final fare details.`;
 
-if (!isOpen) return null;
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Book Package">

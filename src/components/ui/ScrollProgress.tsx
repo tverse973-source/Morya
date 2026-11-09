@@ -1,14 +1,18 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { motion, useScroll, useSpring } from "framer-motion";
 
 export function ScrollProgress() {
+  const pathname = usePathname();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 140,
     damping: 24,
     restDelta: 0.001,
   });
+
+  if (pathname?.startsWith("/morya-admin-hq-9x")) return null;
 
   return (
     <motion.div

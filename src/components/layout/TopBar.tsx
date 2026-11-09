@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { Mail, MessageCircle, Phone } from "lucide-react";
 import { SITE, whatsappUrl } from "@/constants/site";
 
@@ -14,6 +15,9 @@ function InstagramIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function TopBar() {
+  const pathname = usePathname();
+  if (pathname?.startsWith("/morya-admin-hq-9x")) return null;
+
   return (
     <div className="border-b border-[#E2E8F0] bg-[#F8FAFC]">
       <div className="container-page flex items-center justify-between gap-3 py-1.5">
