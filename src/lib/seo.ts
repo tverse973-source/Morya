@@ -159,10 +159,10 @@ export function organizationSchema() {
       serviceType: ["Outstation cabs", "Airport taxi", "Pilgrimage cab", "Corporate cab", "Tempo Traveller on rent"],
       aggregateRating: {
         "@type": "AggregateRating",
-        ratingValue: "4.9",
-        reviewCount: "120+",
-        bestRating: "5",
-        worstRating: "1",
+        ratingValue: 4.9,
+        reviewCount: 120,
+        bestRating: 5,
+        worstRating: 1,
       },
     },
   ];
