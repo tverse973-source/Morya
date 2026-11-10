@@ -17,6 +17,7 @@ export const metadata: Metadata = buildMetadata({
 const aboutJsonLd = [contactSchema()];
 
 const ABOUT_HERO = "/images/brand/about-story.png";
+const STORY_IMAGE = "/images/brand/aboutuscover.png";
 
 export default function AboutPage() {
   return (
@@ -72,6 +73,14 @@ export default function AboutPage() {
                 efficient timely services.
               </p>
             </GlassCard>
+            <div className="relative h-72 lg:h-[420px] rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-sm bg-[#F1F5F9]">
+              <SafeImage
+                src={STORY_IMAGE}
+                alt="Passengers travelling with Morya Travels"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover object-center"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
