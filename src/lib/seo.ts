@@ -123,7 +123,7 @@ export function organizationSchema() {
       contactPoint: [CONTACT_POINT],
       sameAs: [SITE.instagram, SITE.whatsapp, SITE.whatsapp2],
       foundingDate: SITE.established,
-      founder: [{ "@type": "Person", name: SITE.owner }],
+      founder: [{ "@type": "Person", name: SITE.coFounder }],
       areaServed: [
         { "@type": "City", name: "Pune" },
         { "@type": "State", name: "Maharashtra" },

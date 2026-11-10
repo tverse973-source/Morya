@@ -14,12 +14,14 @@ const outfit = Outfit({
   display: "swap",
   variable: "--font-outfit-src",
   weight: ["300", "400", "500", "600", "700", "800", "900"],
+  preload: true,
 });
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-inter-src",
+  preload: true,
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -27,6 +29,7 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
   variable: "--font-mono-src",
   weight: ["400", "500", "600"],
+  preload: true,
 });
 
 export const metadata: Metadata = {

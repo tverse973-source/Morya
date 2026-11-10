@@ -101,17 +101,42 @@ export default function AboutPage() {
       <section className="py-10 border-t border-[#E2E8F0] bg-[#F8FAFC]">
         <div className="container-page text-center">
           <SectionTitle title="Meet Our Team" subtitle="The people behind Morya Travels" className="mb-4" />
-          <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-2 max-w-3xl mx-auto">
-<GlassCard className="overflow-hidden rounded-2xl border border-[#E2E8F0] shadow-sm">
-               <div className="relative h-[330px] w-full overflow-hidden bg-[#F1F5F9]">
-                 <SafeImage
-src="/images/brand/profile-ashvin-rathod.png"
-                   alt="Ashvin Rathod"
-                   sizes="(max-width: 768px) 100vw, 50vw"
-                   className="h-full w-full object-cover object-top"
-                 />
-               </div>
-               <div className="p-8 text-left">
+<div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+            <GlassCard className="overflow-hidden rounded-2xl border border-[#E2E8F0] shadow-sm">
+              <div className="relative h-[330px] w-full overflow-hidden bg-[#F1F5F9]">
+                <SafeImage
+                  src="/images/brand/profile-ritesh-rathod.jpg"
+                  alt="Ritesh Rathod"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+              <div className="p-8 text-left">
+                <h3 className="font-display text-2xl font-bold text-[#0F172A]">Ritesh Rathod</h3>
+                <p className="mt-1 text-sm font-medium text-brand-blue">Owner</p>
+                <div className="mt-5 space-y-3 text-sm text-[#475569]">
+                  <a href="tel:8390466948" className="flex items-center gap-3 hover:text-brand-blue">
+                    <Phone className="h-4 w-4 text-brand-blue" />
+                    +91 83904 66948
+                  </a>
+                  <a href="mailto:info@moryatravel.in" className="flex items-center gap-3 hover:text-brand-blue">
+                    <Mail className="h-4 w-4 text-brand-blue" />
+                    info@moryatravel.in
+                  </a>
+                </div>
+              </div>
+            </GlassCard>
+
+            <GlassCard className="overflow-hidden rounded-2xl border border-[#E2E8F0] shadow-sm">
+              <div className="relative h-[330px] w-full overflow-hidden bg-[#F1F5F9]">
+                <SafeImage
+                  src="/images/brand/profile-ashvin-rathod.png"
+                  alt="Ashvin Rathod"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+              <div className="p-8 text-left">
                 <h3 className="font-display text-2xl font-bold text-[#0F172A]">Ashvin Rathod</h3>
                 <p className="mt-1 text-sm font-medium text-brand-blue">Founder & Owner</p>
                 <div className="mt-5 space-y-3 text-sm text-[#475569]">
@@ -128,25 +153,21 @@ src="/images/brand/profile-ashvin-rathod.png"
             </GlassCard>
 
             <GlassCard className="overflow-hidden rounded-2xl border border-[#E2E8F0] shadow-sm">
-<div className="relative h-[330px] w-full overflow-hidden bg-[#F1F5F9]">
-                 <SafeImage
-                   src="/images/brand/profile-ritesh-rathod.jpg"
-                   alt="Ritesh Rathod"
-                   sizes="(max-width: 768px) 100vw, 50vw"
-                   className="h-full w-full object-cover object-center"
-                 />
-               </div>
-               <div className="p-8 text-left">
-                <h3 className="font-display text-2xl font-bold text-[#0F172A]">Ritesh Rathod</h3>
+              <div className="relative h-[330px] w-full overflow-hidden bg-[#F1F5F9]">
+                <SafeImage
+                  src="/images/brand/profile-rohit-rathod.jpg"
+                  alt="Rohit Rathod"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+              <div className="p-8 text-left">
+                <h3 className="font-display text-2xl font-bold text-[#0F172A]">Rohit Rathod</h3>
                 <p className="mt-1 text-sm font-medium text-brand-blue">Director</p>
                 <div className="mt-5 space-y-3 text-sm text-[#475569]">
-                  <a href="tel:9322291339" className="flex items-center gap-3 hover:text-brand-blue">
+                  <a href="tel:7350329801" className="flex items-center gap-3 hover:text-brand-blue">
                     <Phone className="h-4 w-4 text-brand-blue" />
-                    +91 93222 91339
-                  </a>
-                  <a href="mailto:riteshrathod5614@gmail.com" className="flex items-center gap-3 hover:text-brand-blue">
-                    <Mail className="h-4 w-4 text-brand-blue" />
-                    riteshrathod5614@gmail.com
+                    +91 73503 29801
                   </a>
                 </div>
               </div>

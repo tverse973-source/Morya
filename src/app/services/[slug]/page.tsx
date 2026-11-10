@@ -98,16 +98,10 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             <div className="space-y-6">
               <div className="rounded-2xl border border-[#E2E8F0] bg-white p-6 md:p-8 shadow-sm">
                 <p className="text-xs font-mono uppercase tracking-widest text-[#64748B]">
-                  Starting from
+                  Service details
                 </p>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="font-display text-4xl font-bold text-[#0F172A]">
-                    {service.fare}
-                  </span>
-                  <span className="text-sm text-[#64748B]">{service.fareUnit}</span>
-                </div>
-                <p className="mt-3 text-sm text-[#475569]">
-                  Toll, parking and state permits extra. Transparent pricing — no hidden charges.
+                <p className="mt-3 text-sm leading-relaxed text-[#475569]">
+                  Share your travel details for availability and trip information. Toll, parking, and permits are applicable as per route.
                 </p>
 
                 <div className="mt-8 flex flex-col gap-3">
@@ -122,7 +116,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                   <AnimatedButton
                     variant="ghost"
                     size="md"
-                    href={whatsappUrl(`Hi Morya Travels, I would like to enquire about "${service.title}" (${service.fare} ${service.fareUnit}). Please share availability and booking details.`)}
+                    href={whatsappUrl(`Hi Morya Travels, I would like to enquire about "${service.title}". Please share availability and booking details.`)}
                     className="w-full"
                   >
                     Enquire on WhatsApp
@@ -219,8 +213,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
                       <p className="mt-1 text-xs text-[#64748B]">
                         {vehicle.seats} + 1 seats · {vehicle.ac ? "AC" : "Non-AC"}
                       </p>
-                      <p className="mt-2 text-xs font-medium text-brand-blue">
-                        {isTempo ? `₹${vehicle.packageRate?.toLocaleString("en-IN")}` : `₹${vehicle.ratePerKm}/km`}
+                      <p className="mt-2 text-xs font-medium text-[#475569]">
+                        {vehicle.ac ? "AC available" : "Non-AC"}
                       </p>
                     </div>
                   </Link>
@@ -355,7 +349,7 @@ src={`https://en.wikipedia.org/wiki/Special:FilePath/${encodeURIComponent(place.
                     <div className="mt-4 flex items-center gap-2">
                       <MapPin className="h-4 w-4 text-brand-blue shrink-0" />
                       <span className="text-xs font-medium text-[#475569]">
-                        {relatedService.fare} · {relatedService.fareUnit}
+                        View details
                       </span>
                     </div>
                   </div>

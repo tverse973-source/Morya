@@ -67,11 +67,8 @@ export default async function ServicesPage() {
                     </div>
                     <div className="p-8 flex flex-col flex-1">
                       <p className="text-sm text-[#64748B] leading-relaxed mb-6">
-                        {service.description}
+                        {service.shortDescription || service.description}
                       </p>
-                      <div className="mt-2 text-xs font-bold uppercase tracking-widest text-brand-blue mb-4">
-                        {service.fare} · {service.fareUnit}
-                      </div>
                       <h4 className="text-sm font-body font-semibold text-brand-blue mb-3 uppercase tracking-wider">
                         What&rsquo;s included
                       </h4>
@@ -108,9 +105,6 @@ export default async function ServicesPage() {
                       <span className="block truncate text-sm text-[#64748B]">
                         {service.shortDescription}
                       </span>
-                    </span>
-                    <span className="hidden shrink-0 text-xs font-bold uppercase tracking-wider text-brand-blue sm:inline">
-                      {service.fare} · {service.fareUnit}
                     </span>
                     <ArrowRight className="h-4 w-4 shrink-0 text-[#94A3B8] transition-transform group-hover:translate-x-0.5 group-hover:text-brand-blue" />
                   </Link>

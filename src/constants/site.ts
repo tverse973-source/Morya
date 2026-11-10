@@ -16,7 +16,7 @@ export const SITE = {
   upi: "8999514635@ibl",
   upiQr: "/images/payments/upi-payment-qr.jpg",
   established: "2011",
-  owner: "Ritesh Rathod",
+  coFounder: "Ritesh Rathod",
   address:
     "Shop no 1, Morya Travels Hinjawadi - Aundh Rd, Bhumkar Wasti, Bhumkar Chowk, Wakad, Pune, Pimpri-Chinchwad, Maharashtra-411057",
 };
