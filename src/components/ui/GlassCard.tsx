@@ -8,9 +8,10 @@ interface GlassCardProps extends React.HTMLAttributes<HTMLDivElement> {
   padded?: boolean;
 }
 
-export function GlassCard({ children, className, padded = true }: GlassCardProps) {
+export function GlassCard({ children, className, padded = true, ...props }: GlassCardProps) {
   return (
     <div
+      {...props}
       className={cn(
         "glass relative overflow-hidden group rounded-xl",
 

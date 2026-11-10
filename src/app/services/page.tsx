@@ -1,11 +1,10 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { SectionTitle } from "@/components/ui/SectionTitle";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { ZoomableImage } from "@/components/ui/ZoomableImage";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { getServices } from "@/lib/services";
 import { AnimatedButton } from "@/components/ui/AnimatedButton";
+import { ServiceCardsGrid } from "@/components/services/ServiceCardsGrid";
 import type { Metadata } from "next";
 import { buildMetadata } from "@/lib/seo";
 
@@ -36,55 +35,7 @@ export default async function ServicesPage() {
           <SectionTitle title="Our Services" subtitle="Everything you need for a smooth journey." />
         </div>
         <div className="container-page mt-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {withImage.map((service, i) => (
-              <Link
-                key={service.id}
-                href={`/services/${service.id}`}
-                className="block"
-              >
-                <GlassCard padded={false} className="flex flex-col rounded-xl border border-[#E2E8F0] shadow-sm hover:border-brand-blue transition-all duration-300 group overflow-hidden">
-                    <div className="relative aspect-[4/3] shrink-0 overflow-hidden bg-[#F1F5F9]">
-                      <ZoomableImage
-                        src={service.image}
-                        alt={service.title}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        priority={i === 0}
-                        className="group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/75 via-[#0F172A]/20 to-transparent" />
-                      <span className="absolute bottom-3 left-4 z-10 text-lg font-display font-bold text-white drop-shadow-sm">
-                        {service.title}
-                      </span>
-                      {service.badge && (
-                        <span
-                          className="absolute top-4 left-4 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold text-white shadow-sm"
-                          style={{ backgroundColor: service.badgeColor }}
-                        >
-                          {service.badge}
-                        </span>
-                      )}
-                    </div>
-                    <div className="p-8 flex flex-col flex-1">
-                      <p className="text-sm text-[#64748B] leading-relaxed mb-6">
-                        {service.shortDescription || service.description}
-                      </p>
-                      <h4 className="text-sm font-body font-semibold text-brand-blue mb-3 uppercase tracking-wider">
-                        What&rsquo;s included
-                      </h4>
-                      <ul className="space-y-3 text-sm text-[#64748B]">
-                        {service.includes.slice(0, 4).map((d, idx) => (
-                          <li key={idx} className="flex items-start gap-2">
-                            <span className="w-1.5 h-1.5 rounded-full bg-brand-blue shrink-0 mt-[6px]" />
-                            {d}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                </GlassCard>
-              </Link>
-            ))}
-          </div>
+          <ServiceCardsGrid services={withImage} />
 
           {withoutImage.length > 0 && (
             <div className="mt-14">
