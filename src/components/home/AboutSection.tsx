@@ -25,35 +25,37 @@ const stats = [
 export function AboutSection() {
   return (
     <section className="relative overflow-hidden bg-white py-12 md:py-16">
-      <div className="absolute inset-x-0 top-0 aspect-[16/9] w-full">
-        <SafeImage
-          src="/images/brand/about-journey.png"
-          alt="Morya Travels journey"
-          sizes="100vw"
-          className="block h-full w-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/70 to-white" />
-      </div>
       <div className="container-page relative z-10">
         <div className="grid items-start gap-12 lg:grid-cols-[1fr_1fr] lg:gap-20">
-<motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="relative"
-            >
-              <div className="mt-6 grid grid-cols-2 gap-4">
-                {stats.map((stat) => (
-                  <div key={stat.label} className="rounded-xl border border-[#E2E8F0] bg-white p-5">
-                    <div className="text-2xl font-display font-bold text-[#0F172A]">{stat.value}</div>
-                    <div className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#64748B]">
-                      {stat.label}
-                    </div>
-                  </div>
-                ))}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="relative"
+          >
+            <div className="relative overflow-hidden rounded-[32px] border border-[#E2E8F0] bg-white">
+              <div className="relative aspect-[16/10] w-full">
+                <SafeImage
+                  src="/images/brand/about-cover.jpg"
+                  alt="Morya Travels cab service"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="block h-full w-full object-cover object-center bg-white"
+                />
               </div>
-            </motion.div>
+            </div>
+
+            <div className="mt-6 grid grid-cols-2 gap-4">
+              {stats.map((stat) => (
+                <div key={stat.label} className="rounded-xl border border-[#E2E8F0] bg-white p-5">
+                  <div className="text-2xl font-display font-bold text-[#0F172A]">{stat.value}</div>
+                  <div className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#64748B]">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
