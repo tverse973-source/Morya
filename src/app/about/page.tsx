@@ -17,7 +17,6 @@ export const metadata: Metadata = buildMetadata({
 const aboutJsonLd = [contactSchema()];
 
 const ABOUT_HERO = "/images/brand/about-story.png";
-const STORY_IMAGE = "/images/brand/about-journey.png";
 
 export default function AboutPage() {
   return (
@@ -61,26 +60,18 @@ export default function AboutPage() {
           />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <GlassCard className="p-12">
-<p className="text-[#64748B] leading-relaxed mb-6">
-                  We offer affordable tour packages for everyone to enjoy a bagful of
-                  cheerful moments &amp; unforgettable experiences. Our priority is
-                  customer satisfaction.
-                </p>
-                <p className="text-[#64748B] leading-relaxed">
-                  Vehicles are equipped with GPS for easy navigation and safety. We
-                  provide free home pick-up and drop, economical and reliable
-                  service, comfortable and safe journeys, well-trained drivers, and
-                  efficient timely services.
-                </p>
+              <p className="text-[#64748B] leading-relaxed mb-6">
+                We offer affordable tour packages for everyone to enjoy a bagful of
+                cheerful moments &amp; unforgettable experiences. Our priority is
+                customer satisfaction.
+              </p>
+              <p className="text-[#64748B] leading-relaxed">
+                Vehicles are equipped with GPS for easy navigation and safety. We
+                provide free home pick-up and drop, economical and reliable
+                service, comfortable and safe journeys, well-trained drivers, and
+                efficient timely services.
+              </p>
             </GlassCard>
-            <div className="relative h-72 lg:h-[420px] rounded-2xl overflow-hidden border border-[#E2E8F0] shadow-sm bg-[#F1F5F9]">
-              <SafeImage
-                src={STORY_IMAGE}
-                alt="Passengers travelling with Morya Travels"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover object-center"
-              />
-            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
@@ -101,7 +92,7 @@ export default function AboutPage() {
       <section className="py-10 border-t border-[#E2E8F0] bg-[#F8FAFC]">
         <div className="container-page text-center">
           <SectionTitle title="Meet Our Team" subtitle="The people behind Morya Travels" className="mb-4" />
-<div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+          <div className="mt-4 grid grid-cols-1 gap-6 md:grid-cols-3 max-w-5xl mx-auto">
             <GlassCard className="overflow-hidden rounded-2xl border border-[#E2E8F0] shadow-sm">
               <div className="relative h-[330px] w-full overflow-hidden bg-[#F1F5F9]">
                 <SafeImage
