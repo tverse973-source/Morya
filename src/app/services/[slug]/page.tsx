@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import fs from "fs";
+import path from "path";
 import { ChevronRight, MapPin, Clock, Sparkles, Bus, Car, Globe, Landmark, Plane, Truck } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { getServiceBySlug, getServices, SERVICE_CATEGORIES } from "@/lib/services";
@@ -14,6 +16,23 @@ import { buildMetadata, serviceSchema } from "@/lib/seo";
 const SERVICE_ICON_MAP = { Bus, Car, Globe, Landmark, MapPin, Plane, Truck } as const;
 
 export const dynamic = "force-dynamic";
+
+function getPuneDarshanImages() {
+  try {
+    const dir = path.join(process.cwd(), "public", "images", "services", "PuneDarshan");
+    return fs
+      .readdirSync(dir)
+      .filter((f) => /\.(jpe?g|png|webp)$/i.test(f))
+      .map((f) => `/images/services/PuneDarshan/${f}`);
+  } catch {
+    return [] as string[];
+  }
+}
+
+function formatPlaceName(file: string) {
+  const base = path.basename(file, path.extname(file));
+  return base.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/[-_]+/g, " ").trim();
+}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -41,6 +60,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
   const related = services.filter((s) => s.id !== service.id && service.relatedIds.includes(s.id)).slice(0, 3);
   const fleetOptions = (vehicles as typeof FALLBACK_FLEET).slice(0, 4);
   const ServiceIcon = SERVICE_ICON_MAP[service.iconName as keyof typeof SERVICE_ICON_MAP] ?? Car;
+  const isPuneDarshan = service.id === "pune-darshan-local-cab-service";
+  const puneDarshanImages = isPuneDarshan ? getPuneDarshanImages() : [];
 
   return (
     <div className="flex flex-col flex-1">
@@ -185,7 +206,6 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             </div>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {fleetOptions.map((vehicle) => {
-                const isTempo = vehicle.type === "tempo";
                 return (
                   <Link
                     key={vehicle.id}
@@ -244,42 +264,33 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         </div>
       </section>
 
-      {/* Sightseeing places */}
-      {service.places && service.places.length > 0 && (
+      {/* Pune Darshan images */}
+      {isPuneDarshan && puneDarshanImages.length > 0 && (
         <section className="py-14 border-t border-[#E2E8F0] bg-[#F8FAFC]">
           <div className="container-page">
             <div className="mx-auto max-w-5xl">
-              <h2 className="text-3xl font-display font-bold text-[#0F172A] mb-10">
-                Sightseeing Places to Visit
+              <h2 className="text-3xl font-display font-bold text-[#0F172A] mb-10 text-center">
+                Pune Darshan Highlights
               </h2>
-              <p className="mb-8 text-[#64748B] leading-relaxed text-center">
-                Explore the best attractions with a dedicated cab and an experienced local driver who
-                knows every route.
-              </p>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {service.places.map((place) => (
+                {puneDarshanImages.map((src) => (
                   <div
-                    key={place}
+                    key={src}
                     className="group overflow-hidden rounded-xl border border-[#E2E8F0] bg-white transition-all hover:shadow-md"
                   >
-<div className="relative aspect-[4/3] overflow-hidden bg-[#F1F5F9]">
+                    <div className="relative aspect-[4/3] overflow-hidden bg-[#F1F5F9]">
                       <SafeImage
-src={`https://en.wikipedia.org/wiki/Special:FilePath/${encodeURIComponent(place.replace(/ /g, "_"))}`}
-                        alt={place}
+                        src={src}
+                        alt={formatPlaceName(src)}
                         sizes="(max-width: 768px) 100vw, 25vw"
                         className="block w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/60 to-transparent" />
                       <div className="absolute left-3 bottom-3 z-10">
                         <h3 className="font-display font-bold text-white text-sm leading-tight drop-shadow-sm">
-                          {place}
+                          {formatPlaceName(src)}
                         </h3>
                       </div>
-                    </div>
-                    <div className="p-4">
-                      <p className="text-xs text-[#64748B]">
-                        Visit {place} with our dedicated Pune local cab.
-                      </p>
                     </div>
                   </div>
                 ))}
